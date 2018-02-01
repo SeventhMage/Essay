@@ -7,6 +7,7 @@ template<typename T>
 class Handle
 {
 public:
+	Handle();
 	Handle(T *t);
 	Handle(const Handle&);
 	~Handle();
@@ -16,6 +17,13 @@ private:
 	T *p;
 	UseCount c;
 };
+
+template<typename T>
+Handle<T>::Handle()
+	:p(new T)
+{
+	
+}
 
 template<typename T>
 Handle<T>::Handle(T *t)

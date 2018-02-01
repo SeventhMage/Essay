@@ -5,7 +5,7 @@
 
 int main(int argc, char *argv[])
 {
-	Handle<Point>h1(new Point(1, 2));
+	Handle<Point>h1;
 	Handle<Point>h2 = h1;
 	h2->x(3);
 	
