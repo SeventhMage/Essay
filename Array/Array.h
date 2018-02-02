@@ -6,46 +6,110 @@
 using namespace std;
 
 template<typename T>
+class ArrayData
+{
+	friend class Array;
+	
+	ArrayData():use(1), data(nullptr), sz(0){}
+	ArrayData(unsigned size):use(1), data(new T[size]), sz(size) {}
+	ArrayData(const ArrayData& ad)
+		:use(1), data(new T[ad.sz]), sz(ad.sz)
+	{	
+		strcpy(data, ad.data);
+	}
+	~ArrayData(){ if (data) delete data; }
+	
+	T& operator[](unsigned n)
+	{
+		if (data == nullptr || n >= sz)
+			throw "Out of Range";
+		return data[n];
+	}
+	
+	const T& operator[](unsigned n) const
+	{
+		if (data == nullptr || n >= sz)
+			throw "Out of Range";
+		return data[n];		
+	}
+	
+	ArrayData& operator=(const ArrayData&);
+	
+	T* data;
+	unsigned sz;
+	unsigned use;
+}
+
+template<typename T>
 class Array
 {
 public:
-	Array():data(nullptr), size(0){}
-	Array(unsigned size):data(new T[size]), sz(size) {}
-	~Array(){ if (data) delete data; }
-	
-	const T& operator[](unsigned n)const
+	Array():data(nullptr){}
+	Array(unsigned size):data(new ArrayData(size){}
+	Array(const Array& array)
+		:data(array.data)
 	{
-		if (n >= sz || data == nullptr)
-			throw "Array subscript out of range.";
-		return data[n];
+		if (data)
+		{
+			++data.use;
+		}
 	}
+	~Array()
+	{
+		if (data && --data.use == 0)
+		{
+			delete data;
+		}
+	}
+	
+	Array& operator=(const Array& array)
+	{
+		if (&array != this)
+		{
+			if (array.data)
+			{
+				++array.data;
+			}
+			
+			if (data && --data.use == 0)
+			{
+				delete data;
+			}
+			
+			data = array.data;
+		}
+		
+		return *this;
+	}
+	
 	T& operator[](unsigned n)
 	{
-		if (n >= sz || data == nullptr)
-			throw "Array subscript out of range.";
-		return data[n];	
+		if (!data)
+			throw "Out of range";
+		return data[n];
 	}
 	
-	unsigned size() const { return sz; }
-	
-	
-	friend ostream& operator<<(ostream& os, const Array<T>& array)
+	const T& operator[](unsigned n) const
 	{
-		unsigned sz = array.size();
-		for (unsigned i=0; i<sz; ++i)
-		{
-			os << array[i];
-			if (i < sz - 1)
-				os << ",";
-		}
-		return os;
+		if (!data)
+			throw "Out of range";
+		return data[n];		
 	}
+	
 private:
-	Array(const Array&);
-	Array& operator=(const Array&);
-	T* data;
-	unsigned sz;
+	ArrayData *data;
 };
+
+template<typename T>
+class Pointer
+{
+public:
+	Pointer(const Array<T> &array, unsigned n = 0) : array(array), sub(n){}
+private:
+	Array<T> array;
+	unsigned sub;
+	
+}
 
 
 #endif
