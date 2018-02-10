@@ -17,10 +17,11 @@ int main(int argc, char *argv[])
 	a->reserve(20);
 	(*a)[20] = 20;
 	
-	Pointer<int>pointer(*a, 20);
+	Pointer<int>pointer(*a, 19);
+	Pointer<int>pointer1(*a, 1);
 	
-	
-	cout << *pointer << endl;
+	cout << *(3 + pointer1 + 4) << endl;
+	cout << *(pointer1 + 7) << endl;
 	delete a;
 	*pointer = 4;
 	cout << *pointer << endl;

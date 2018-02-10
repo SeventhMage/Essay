@@ -48,7 +48,7 @@ class ArrayData
 	{
 		if (n == sz) return;
 		T* ndata = new T[n];
-		memcpy(ndata, data, n < sz ? sz : n);
+		memcpy(ndata, data, n * sizeof(T));
 		delete data;
 		data = ndata;
 		sz = n;
@@ -204,6 +204,49 @@ public:
 		return (*data)[sub];
 	}
 	
+	ConstPointer& operator++()
+	{
+		++sub;
+		return *this;
+	}
+	
+	ConstPointer operator++(int)
+	{
+		ConstPointer pt = *this;
+		++sub;
+		return pt;
+	}
+	
+	ConstPointer& operator--()
+	{
+		--sub;
+		return *this;
+	}
+	
+	ConstPointer operator--(int)
+	{
+		ConstPointer pt = *this;
+		--sub;
+		return pt;
+	}
+	
+	ConstPointer& operator+=(int n)
+	{
+		sub += n;
+		return *this;
+	}
+	
+	ConstPointer& operator-=(int n)
+	{
+		sub -= n;
+		return *this;
+	}
+	
+	friend int operator-(const ConstPointer<T>& op1, const ConstPointer<T>& op2)
+	{
+		return (op1.sub - op2.sub);
+	}
+	
 protected:
 	ArrayData<T>* data;
 	unsigned sub;
@@ -220,6 +263,56 @@ public:
 		if (data == nullptr)
 			throw "Out of Range";
 		return (*data)[sub];
+	}
+	
+	Pointer& operator++()
+	{
+		++sub;
+		return *this;
+	}
+	
+	Pointer operator++(int)
+	{
+		Pointer pt = *this;
+		++sub;
+		return pt;
+	}
+	
+	Pointer& operator--()
+	{
+		--sub;
+		return *this;
+	}
+	
+	Pointer operator--(int)
+	{
+		Pointer pt = *this;
+		--sub;
+		return pt;
+	}
+	
+	Pointer& operator+=(int n)
+	{
+		sub += n;
+		return *this;
+	}
+	
+	Pointer& operator-=(int n)
+	{
+		sub -= n;
+		return *this;
+	}
+	
+	friend Pointer<T> operator+(int n, const Pointer<T>& p)
+	{
+		Pointer<T> ret = p;
+		return (ret += n);
+	}
+	
+	friend Pointer<T> operator+(const Pointer<T>& p, int n)
+	{
+		Pointer<T> ret = p;
+		return (ret += n);
 	}
 };
 
